@@ -1,0 +1,37 @@
+---
+description: Security practices for the marketing site
+alwaysApply: true
+---
+
+# Security
+
+## No dangerouslySetInnerHTML
+
+Never use `dangerouslySetInnerHTML`. All content is static and controlled — there is no
+reason to bypass React's XSS protections. If rich formatting is needed, use JSX.
+
+## No secrets in code
+
+- `.env` files must never be committed.
+- API keys, tokens, and credentials must not appear in source code.
+- `NEXT_PUBLIC_` environment variables are visible to browsers — only put truly public
+  values there.
+
+## External links
+
+- All external links use `rel="noopener noreferrer"` and `target="_blank"`.
+- No raw `<a>` tags — use Next.js `Link` for internal navigation and an `<a>` with the
+  above attributes for external links.
+
+## Headers
+
+Next.js `next.config.mjs` should include security headers:
+- `X-Frame-Options: DENY`
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+
+## Image sources
+
+Only load images from trusted origins. `next.config.mjs` image domains should be explicitly
+listed. Do not use `unoptimized: true` as a blanket override.

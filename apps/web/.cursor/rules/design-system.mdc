@@ -1,0 +1,83 @@
+---
+description: Design tokens, glassmorphism, typography scale, color discipline, and the intelligence aesthetic
+alwaysApply: true
+---
+
+# Design System
+
+## Tokens, not hex
+
+Never hardcode color values in component code. Use design tokens from `globals.css`:
+
+| Instead of | Use |
+|------------|-----|
+| `#0066ff` in a component | `text-accent-blue`, `bg-accent-blue`, `border-accent-blue` |
+| `#00ff88` | `text-accent-green`, `bg-accent-green` |
+| `rgba(255,255,255,0.03)` | `bg-bg-tertiary`, `bg-bg-glass` |
+
+Exception: NIST pillar colors from `NIST_COLORS` in `lib/data/dashboard.ts` may be applied via
+inline `style` when dynamically mapping a NIST function to its color. This is the only acceptable
+use of inline color styles.
+
+## Glass panel
+
+`glass-panel` is the primary surface treatment. It provides:
+- Gradient background with subtle blue tint
+- Border with brighter top edge
+- Backdrop blur and saturation
+- Inset glow shadows
+- Hover state with enhanced glow
+
+Use `<GlassPanel>` component or the `glass-panel` CSS class. Do not recreate these styles inline.
+
+## Typography scale
+
+All text must use Tailwind classes. No inline `style={{ fontSize: ... }}`.
+
+| Role | Class | Size |
+|------|-------|------|
+| Hero title | `text-5xl md:text-6xl lg:text-7xl` | 48-72px |
+| Page title | `text-4xl md:text-5xl` | 36-48px |
+| Section heading | `text-2xl md:text-3xl` | 24-30px |
+| Card header | `text-sm font-medium` | 14px |
+| Body text | `text-sm font-light` | 14px |
+| KPI number | `text-2xl glow-number` | 24px |
+| Label / metadata | `text-[11px] uppercase tracking-wide` | 11px |
+| Contextual heading | `text-2xl font-extralight` | 24px |
+| Document subsection | `text-sm font-medium` | 14px |
+| **Minimum** | `text-[11px]` | **11px — nothing below** |
+
+Exceptions: error boundaries (`error.tsx`, `global-error.tsx`) and legal page subsection headings
+(`LegalPageTemplate`) use smaller heading scales appropriate to their context. These are not page
+section headings and should not be flagged.
+
+## Font weight
+
+- Headlines: `font-extralight` (200)
+- Body: `font-light` (300)
+- Labels: `font-medium` (500)
+- Never use `font-bold` or `font-semibold` — the aesthetic is restrained, not loud.
+
+## Spacing
+
+- Section padding: `px-6 md:px-12 lg:px-32`
+- Inter-section gap: `space-y-8` when inside a continuous flow
+- Card internal padding: `p-4` to `p-5`
+- Gap between cards: `gap-3`
+
+## Animation
+
+Available keyframes: `fadeIn`, `glow-pulse`, `status-breathe`, `holo-sweep`.
+Use `animate-[name_duration_easing]` syntax. Prefer subtle, slow animations (3-8 second cycles).
+No bouncing, no attention-grabbing motion.
+
+## The intelligence aesthetic
+
+The site should feel like a classified briefing document:
+- Dark backgrounds (`#0a0a0f`)
+- Restrained color — accent blue is the primary highlight, used sparingly
+- Monospace for data values (`font-mono tabular-nums`)
+- Uppercase tracking for labels and metadata
+- Technical vocabulary, not marketing fluff
+- Dashed lines, not solid borders, for connectors
+- Glow effects suggest active systems, not decoration

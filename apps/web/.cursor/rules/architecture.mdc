@@ -1,0 +1,69 @@
+---
+description: Project structure, file organization, and data flow conventions
+alwaysApply: true
+---
+
+# Architecture
+
+## Project structure
+
+```
+apps/web/
+├── app/                    Next.js 15 App Router pages
+│   ├── page.tsx            Landing page
+│   ├── about/              Company info
+│   ├── products/           Product pages (cypher1, stratos1)
+│   ├── lab/                Implementation dashboards
+│   │   ├── cypher/         CYPHER ONE dashboard (interactive)
+│   │   └── stratos/        STRATOS ONE dashboard (coming soon)
+│   ├── architecture/       Trust architecture overview
+│   ├── use-cases/          Vertical use case pages
+│   └── ...                 Legal, contact, docs, etc.
+├── components/             Shared UI components
+│   └── lab/                Dashboard-specific components
+├── lib/                    Utilities, data, and configuration
+│   ├── data/               Fixture data and type definitions
+│   ├── site.ts             Site-wide constants (name, org, tagline)
+│   ├── metadata.ts         SEO metadata helpers
+│   └── cn.ts               Class name merge utility
+└── public/                 Static assets (brand images, icons)
+```
+
+## Data flow
+
+- All dashboard data lives in `lib/data/dashboard.ts` — types and fixture constants.
+- Product-specific data lives in `lib/data/cypher1.ts` and similar files.
+- Site-wide constants (`name`, `org`, `tagline`) live in `lib/site.ts`.
+- Components receive data as props. No global state management library.
+- The only client-side state is `selectedAgent` in the lab dashboard, managed via `useState`.
+
+## Navigation
+
+The site uses a single hamburger-style menu at all breakpoints. The `Nav` component renders a
+"Menu" button that toggles a full-width dropdown. There is no separate desktop horizontal link
+bar — this is intentional, not a bug. Do not add `lg:flex` or `lg:block` alternatives.
+
+## Component conventions
+
+- Named exports only. No `export default`. Every component is `export function ComponentName`.
+- Client components (`"use client"`) only when hooks or event handlers are required.
+- Page files are server components by default. In Next.js 15, `params` is a Promise.
+- Shared components go in `components/`. Dashboard-specific components go in `components/lab/`.
+- Components that appear on multiple pages (Nav, Footer, Hero, Section, GlassPanel) are site-wide primitives — modify with care.
+
+## Naming
+
+| Thing | Convention | Example |
+|-------|-----------|---------|
+| Types, interfaces, components | PascalCase | `NistCellMapping`, `GlassPanel` |
+| Variables, functions | camelCase | `selectedAgent`, `formatTime` |
+| Files, directories | PascalCase for components, kebab-case for utils | `Nav.tsx`, `dashboard.ts` |
+| CSS classes | kebab-case | `glass-panel`, `glow-number` |
+| Constants | UPPER_SNAKE_CASE | `NIST_COLORS`, `DASHBOARD_STATS` |
+
+## Import order
+
+1. React / Next.js imports
+2. Component imports (from `@/components/`)
+3. Data / utility imports (from `@/lib/`)
+4. Type-only imports last

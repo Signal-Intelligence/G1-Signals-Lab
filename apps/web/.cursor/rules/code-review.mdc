@@ -1,0 +1,53 @@
+---
+description: Code review checklist applied before considering any change complete
+alwaysApply: true
+---
+
+# Code Review Checklist
+
+Before marking any task complete, check every item:
+
+## Correctness
+
+- [ ] TypeScript compiles cleanly: `npx tsc --noEmit` passes with 0 errors
+- [ ] No runtime errors visible in browser console
+- [ ] The change works at mobile, tablet, and desktop breakpoints
+- [ ] Dynamic content (dropdowns, filters, expandable panels) opens and closes correctly
+
+## Quality
+
+- [ ] No `any`, `@ts-ignore`, or `as unknown as`
+- [ ] No files exceed 300 lines
+- [ ] No dead code, unused imports, or unused variables
+- [ ] All components use named exports
+- [ ] No inline `style={{ fontSize: ... }}` — use Tailwind classes
+- [ ] No raw hex colors in component code (exception: NIST pillar colors via `NIST_COLORS`)
+
+## Design
+
+- [ ] Text meets the `text-[11px]` minimum
+- [ ] Colors use design tokens from `globals.css`
+- [ ] `glass-panel` is used for card surfaces
+- [ ] Font weights are `extralight`, `light`, or `medium` — never `bold` or `semibold`
+- [ ] Animation is subtle and serves a purpose
+
+## UX
+
+- [ ] Click-outside-to-close works on all dropdowns and expandable panels
+- [ ] Escape key closes dropdowns
+- [ ] Interactive elements have hover states
+- [ ] No overlapping elements or clipped content
+- [ ] Spacing is consistent with the `px-6 md:px-12 lg:px-32` section padding system
+
+## Data
+
+- [ ] Confidence values are 0-100 (not 0-1)
+- [ ] NIST function codes use the correct 2-letter abbreviations
+- [ ] Agent handles match those in `NIST_CELL_MAPPINGS`
+- [ ] KPI values are computed from the data, not hardcoded
+
+## Encoding
+
+- [ ] No PowerShell string operations were used on files containing Unicode
+- [ ] No mojibake characters visible on any page
+- [ ] If files were modified via shell, encoding was verified

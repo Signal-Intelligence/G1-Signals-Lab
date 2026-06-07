@@ -1,0 +1,36 @@
+---
+description: TypeScript strictness, naming conventions, and code style for all TS/TSX files
+globs: "**/*.ts, **/*.tsx"
+alwaysApply: false
+---
+
+# TypeScript Quality
+
+## Zero tolerance
+
+- No `any`: no `as any`, no `: any`. Use `unknown` + type narrowing or a precise type.
+- No escape hatches: no `@ts-ignore`, no `@ts-expect-error`, no `as unknown as`.
+- If a cast is truly needed, use a single `as T` with a comment justifying why.
+
+## Type definitions
+
+- Dashboard types and fixture data live in `lib/data/dashboard.ts`. This file is self-contained with no external type imports.
+- Product-specific types live in their respective `lib/data/` files.
+- Prefer `interface` for object shapes that may be extended. Use `type` for unions, intersections, and computed types.
+
+## Style
+
+- Named exports only. No `export default`.
+- `import type` for type-only imports.
+- Prefix unused params with underscore: `_options`, `_i`.
+- Early returns to reduce nesting.
+- Destructure props and parameters.
+
+## Dashboard data conventions
+
+- `NistCellMapping.confidence` is a number from 0-100. Never multiply by 100.
+- Bar widths use `${confidence}%` directly.
+- Display values use `${confidence}%` directly.
+- NIST function codes are 2-letter strings: `GV`, `ID`, `PR`, `DE`, `RS`, `RC`.
+- Agent handles are lowercase hyphenated: `one-intel`, `one-shadow`, `one-vector`, etc.
+- `CYPHER ONE` is the orchestrator, not a pillar agent. Filter it out of pillar-specific displays.

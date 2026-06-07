@@ -1,0 +1,36 @@
+---
+description: UTF-8 encoding preservation rules for Windows development environment
+alwaysApply: true
+---
+
+# Encoding Safety
+
+## The problem
+
+This codebase contains Unicode characters — em dashes (—), middle dots (·), and geometric
+symbols (◆, ▣, ▲, ◈, ⬥, ◇). PowerShell string operations on Windows can corrupt these
+multi-byte UTF-8 sequences, producing mojibake (e.g., `â€"` instead of `—`, `Â·` instead of `·`).
+
+## Rules
+
+- **Never use PowerShell heredocs** (`@' ... '@`) to write files containing special characters.
+- **Never use PowerShell `-replace`** on file content containing multi-byte UTF-8. The regex
+  engine may re-encode characters through Windows-1252.
+- **Prefer `StrReplace`** (the Cursor tool) for targeted text replacements. It preserves encoding.
+- **Prefer `Write`** (the Cursor tool) for full file rewrites. It writes clean UTF-8.
+- **If PowerShell is required**, use `[System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)`
+  and write back with `UTF8Encoding($false)` (no BOM). Use `.Replace()` (string method),
+  not `-replace` (regex operator) for simple substitutions.
+- **If encoding is corrupted**, diagnose at the byte level: read bytes, convert to hex, identify
+  the corrupted sequences, and do byte-level replacement. Common patterns:
+  - `C3 A2 E2 82 AC E2 80 9D` → `E2 80 94` (em dash)
+  - `C2 B7` is correct UTF-8 for middle dot — do not "fix" it.
+
+## Verification
+
+After any file modification via shell commands, verify no replacement characters exist:
+
+```powershell
+$c = [System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)
+$c.Contains([char]0xFFFD)  # Should be False
+```

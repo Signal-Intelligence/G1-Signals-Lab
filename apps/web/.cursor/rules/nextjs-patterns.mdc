@@ -1,0 +1,56 @@
+---
+description: Next.js 15 App Router patterns, Server vs Client Components, and page conventions
+globs: "**/app/**/*.tsx, **/components/**/*.tsx"
+alwaysApply: false
+---
+
+# Next.js & React Patterns
+
+## Server Components are the default
+
+- Only add `"use client"` when the file uses hooks (`useState`, `useEffect`, `useRef`),
+  browser APIs, or event handlers.
+- Page components under `app/` are server components by default.
+- In Next.js 15, `params` and `searchParams` are Promises:
+
+```typescript
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+}
+```
+
+## Page structure
+
+Product and content pages follow a consistent pattern:
+1. `PageHero` with eyebrow, title, optional subtitle
+2. `Section` blocks for content groups
+3. `GlassPanel` for card surfaces
+4. `CardHeader` / `CardFooter` for panel chrome
+
+Lab dashboard pages use a flat `div` layout with `space-y-8` instead of `Section` wrappers
+to avoid excessive vertical padding.
+
+## Component patterns
+
+- No prop drilling beyond 2 levels. Use component composition.
+- Click-outside-to-close: every dropdown and expandable panel must use `useRef` + `useEffect`
+  with a `mousedown` listener on `document`.
+- Escape key: dropdowns should also close on Escape via a `keydown` listener.
+- Only one expandable panel open at a time per component group.
+
+## Accessibility
+
+- Interactive elements need `aria-label` or visible text.
+- Decorative elements need `aria-hidden="true"`.
+- SVG icons that convey meaning need `role="img"` and a title.
+- The nav has a skip-to-content link — preserve it.
+
+## Metadata
+
+- Every page exports metadata via `pageMetadata()` from `lib/metadata.ts`.
+- Product pages export `export const metadata = pageMetadata(title, description, path)`.
+- Dynamic pages use `generateMetadata` with awaited params.

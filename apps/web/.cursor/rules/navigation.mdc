@@ -1,0 +1,58 @@
+---
+description: Nav component structure, dropdown conventions, and routing rules
+globs: "**/components/Nav.tsx, **/components/Footer.tsx"
+alwaysApply: false
+---
+
+# Navigation
+
+## Nav structure
+
+The `Nav` component (`components/Nav.tsx`) is client-side (`"use client"`) and handles:
+- The G1 Signals Lab brand mark (bull icon + text), positioned to sit in the left gutter
+- Desktop link bar with Products and Lab dropdowns, plus standalone links
+- Mobile hamburger menu with accordion-style sections
+- Scroll-aware backdrop blur
+
+## Logo alignment
+
+The bull icon (`/brand/bull-nav.png`) is positioned via `lg:-ml-[112px]` so it sits in the
+left gutter (outside the `lg:px-32` content padding). The text "G1 Signals Lab" aligns with
+the main content edge. Do not change these values without understanding the relationship
+between the negative margin and the `lg:px-32` section padding.
+
+## Dropdowns
+
+Both Products and Lab use the same dropdown pattern:
+
+```typescript
+const [open, setOpen] = useState(false);
+const dropdownRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  function handleClickOutside(e: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+```
+
+## Disabled links
+
+Items marked `disabled: true` in `productLinks` or `labLinks` are rendered as `<span>`
+elements (not `<Link>`) with `text-text-muted/40` styling and a "Coming Soon" badge. They
+are not clickable and do not navigate.
+
+## Current routes
+
+Products: Cypher (`/products/cypher1`), Stratos (`/products/stratos1` — disabled).
+Lab: Cypher (`/lab/cypher`), Stratos (`/lab/stratos` — disabled).
+Lab index (`/lab`) redirects to `/lab/cypher`.
+
+## Footer
+
+The footer (`components/Footer.tsx`) mirrors the nav link structure. The Lab link points to
+`/lab/cypher`, not `/lab`.

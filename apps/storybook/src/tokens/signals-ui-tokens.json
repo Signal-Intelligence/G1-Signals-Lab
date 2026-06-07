@@ -1,0 +1,61 @@
+{
+  "color": {
+    "bg": {
+      "primary": "#0a0a0f",
+      "secondary": "#171717",
+      "tertiary": "rgba(255,255,255,0.03)",
+      "glass": "rgba(255,255,255,0.03)"
+    },
+    "accent": {
+      "blue": "#0066ff",
+      "blue-hover": "#0052cc",
+      "green": "#00ff88",
+      "danger": "#ef4444"
+    },
+    "severity": {
+      "critical": "#c4506a",
+      "high": "#b8784a",
+      "medium": "#9a8a42",
+      "low": "#4b5563"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#9ca3af",
+      "muted": "#6b7280",
+      "data": "#4b5563"
+    },
+    "border": {
+      "subtle": "rgba(255,255,255,0.05)",
+      "default": "rgba(255,255,255,0.10)",
+      "accent": "rgba(0,102,255,0.20)",
+      "glass": "rgba(255,255,255,0.08)"
+    }
+  },
+  "font": {
+    "family": {
+      "sans": ["Inter", "system-ui", "sans-serif"]
+    },
+    "weight": {
+      "thin": "100",
+      "extralight": "200"
+    }
+  },
+  "spacing": {
+    "tracking": {
+      "eyebrow": "0.3em",
+      "telemetry": "0.1em",
+      "label": "0.2em"
+    }
+  },
+  "shadow": {
+    "glow-blue": "0 0 16px rgba(0,102,255,0.4)",
+    "glow-blue-sm": "0 0 8px rgba(0,102,255,0.6)",
+    "glow-blue-lg": "0 0 60px rgba(0,102,255,0.3)",
+    "glow-dot": "0 0 10px #0066ff"
+  },
+  "radius": {
+    "none": "0",
+    "sm": "2px",
+    "DEFAULT": "4px"
+  }
+}

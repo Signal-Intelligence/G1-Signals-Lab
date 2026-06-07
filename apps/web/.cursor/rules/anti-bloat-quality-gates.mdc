@@ -1,0 +1,50 @@
+---
+description: File size limits, dead code prevention, dependency discipline, and the merge smell test
+alwaysApply: true
+---
+
+# Anti-Bloat & Quality Gates
+
+## 300-line rule
+
+No single `.tsx` page or component file exceeds 300 lines. When approaching the limit:
+- Extract data arrays, constants, and fixture objects into a co-located `.ts` file in `lib/data/`
+- Extract sub-components into co-located files or the `components/` directory
+- Page files should be thin orchestrators that import and compose components
+
+## Dead code
+
+- If a component, function, or export has zero consumers, delete it.
+- Fix unused imports and variables immediately — never suppress warnings.
+- Unused dependencies in `package.json` should be removed.
+- Stale components that have been replaced (e.g. `DiagonalAccent`, `HeroConstellation`, `StickyCTA`) should be deleted if no page imports them.
+
+## Dependency discipline
+
+- Do not add a new npm package for something achievable in fewer than 30 lines of code.
+- Every new dependency must be justified — what does it do that we cannot do ourselves?
+- This is a static marketing site. It should have minimal runtime dependencies.
+
+## TypeScript gate
+
+`npx tsc --noEmit` must pass with zero errors before any task is considered complete. Do not leave type errors for later — fix them as part of the change.
+
+## Commits
+
+Follow conventional commits: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`. Imperative mood, no period at end. Body explains *why*, not *what*.
+
+## TODOs
+
+Every `// TODO` comment must explain what it defers and why. Bare `// TODO` without context is not acceptable.
+
+## Smell test — apply before completing any task
+
+- Would a senior engineer reading this diff feel confident merging it?
+- Is every file under 300 lines?
+- Are there zero type escape hatches (`any`, `@ts-ignore`, `as unknown as`)?
+- Does every new component use design tokens, not raw hex colors?
+- Is text size at or above the `text-[11px]` minimum?
+- Would `npx tsc --noEmit` pass with 0 errors?
+- Did you delete anything that became unused as a result of your changes?
+- Are all expandable/dropdown elements wired with click-outside-to-close?
+- Did you verify the change visually in the browser?

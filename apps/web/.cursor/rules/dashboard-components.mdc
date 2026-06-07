@@ -1,0 +1,53 @@
+---
+description: Conventions for the interactive lab dashboard components in components/lab/
+globs: "**/components/lab/**/*.tsx, **/app/lab/**/*.tsx"
+alwaysApply: false
+---
+
+# Dashboard Components
+
+## Component inventory
+
+| Component | Purpose | Key props |
+|-----------|---------|-----------|
+| `OrchestratorStrip` | Collapsible CYPHER ONE status bar | `mappings` |
+| `NistPillarRow` | 6 interactive NIST pillar cards | `mappings`, `registry`, `selectedAgent?` |
+| `KpiRibbon` | 4-card KPI grid with drilldowns | `items` |
+| `TrustDecayGauge` | SVG semicircle arc gauge per agent | `handle`, `nistFunction`, `confidence` |
+| `NistPostureMatrix` | 6-row posture table | `mappings`, `selectedAgent` |
+| `AgentSelector` | Dropdown agent filter | `agents`, `selectedAgent`, `onSelect` |
+| `EventLog` | Scrollable execution event feed | `events`, `selectedAgent` |
+
+## Data source
+
+All dashboard data comes from `lib/data/dashboard.ts`. This file is self-contained:
+- Types: `NistCellMapping`, `CellRegistryEntry`, `ExecutionEvent`, `CellIdentity`, etc.
+- Constants: `NIST_COLORS`, `NIST_CELL_MAPPINGS`, `CELL_REGISTRY`, `ALL_CELLS`, etc.
+- No external type imports — everything is defined inline.
+
+## Conventions
+
+- All components use named exports.
+- Presentational lab components (`EventLog`, `TrustDecayGauge`, `NistPostureMatrix`) don't need `"use client"` when nested under a client parent. Only components that own hooks or event handlers need the directive.
+- Confidence values are 0-100. Bar widths = `${confidence}%`. Display = `${confidence}%`.
+- NIST colors are applied via `NIST_COLORS[nistFunction]` with inline styles (exception to the no-hex rule).
+- Text uses only Tailwind classes. Minimum `text-[11px]`. No inline `fontSize`.
+- SVG text uses `fontSize={N}` attributes — minimum 7 for labels, 8-9 for function codes.
+
+## Interactivity patterns
+
+- **Click-outside-to-close**: `useRef` on the outer container + `useEffect` with `mousedown` on `document`.
+- **Escape to close**: `useEffect` with `keydown` listener for `Escape` key.
+- **Only one panel open**: state is a single `openIndex: number | null`, not a map of booleans.
+- **Agent filtering**: when `selectedAgent` is set, non-matching items are dimmed (`opacity-25`), not hidden.
+- **Agent selection**: handled solely by `AgentSelector` dropdown — no hub-spoke diagram.
+
+## Agent-to-event mapping
+
+For the `EventLog`, agent filtering uses an explicit mapping:
+- `one-echo` → `health_check` (DETECT)
+- `one-vector` → `patch` (PROTECT)
+- `one-surge` → `patch`, `rollback` (RESPOND)
+- `one-ghost` → `evidence` (RECOVER)
+- `one-intel` → none (GOVERN — no execution events)
+- `one-shadow` → none (IDENTIFY — no execution events)
